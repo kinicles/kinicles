@@ -1,3 +1,7 @@
+Kinicles-Team:
+* "Florian Ziesche":https://github.com/a2flo
+* "Peter Wrobel":https://github.com/ParticlePeter
+* "Yannic Haupenthal":https://github.com/tohn
 
 simplified Build Instructions:
 * git submodule init
