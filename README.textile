@@ -1,0 +1,20 @@
+
+simplified Build Instructions:
+* ./premake.sh
+* make
+* execute binary in kinicles/bin
+
+Dependencies and Credits:
+* "SDL and SDL_image":http://www.libsdl.org
+* "libpng":http://www.libpng.org
+* "zlib":http://www.zlib.net
+* "libxml2":http://www.xmlsoft.org
+* "premake4":http://www.industriousone.com/premake
+* "MinGW/MSYS environment":http://www.mingw.org
+* "clang/llvm/libc++":http://www.llvm.org
+* "OpenNI":http://www.openni.org
+* "OpenAL":http://www.openal.org
+* "FFTW":http://www.fftw.org
+
+Demo:
+"http://www.youtube.com/watch?v=beTqiiV5zhI":http://www.youtube.com/watch?v=beTqiiV5zhI

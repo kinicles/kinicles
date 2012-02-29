@@ -1,0 +1,3 @@
+[submodule "a2elight"]
+	path = a2elight
+	url = git://github.com/a2flo/a2elight.git

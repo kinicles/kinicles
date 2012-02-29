@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a2e_shader version="1">
+	<includes>global ni_skinning inferred</includes>
+
+	<vertex_shader>
+		<variables>
+in vec2 texture_coord;
+out vec2 out_tex_coord;
+		</variables>
+		<program>
+void main() {
+	out_tex_coord = texture_coord;
+
+	vec4 out_pos = apply_skinning(vec4(in_vertex, 1.0));
+	
+	// since we're never rendering alpha objects, this doesn't need to be modified
+	inferred_vs();
+	
+	gl_Position = mvpm * out_pos;
+}
+		</program>
+	</vertex_shader>
+	
+	<fragment_shader>
+		<variables>
+uniform sampler2D diffuse_texture;
+uniform sampler2D specular_texture;
+
+in vec2 out_tex_coord;
+		</variables>
+		<program>
+void main() {
+	vec4 light_color = compute_light_color();
+	
+	vec4 diff_color = texture(diffuse_texture, out_tex_coord);
+	vec4 spec_color = texture(specular_texture, out_tex_coord);
+	
+	////////////////////////////////////////////////////////////////////////////
+	// lighting
+	vec3 final_color = light_color.rgb * diff_color.rgb + light_color.a * spec_color.rgb;
+			
+	frag_color = vec4(final_color * diff_color.a, diff_color.a);
+}
+		</program>
+	</fragment_shader>
+	
+</a2e_shader>

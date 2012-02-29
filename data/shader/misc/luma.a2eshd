@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a2e_shader version="1">
+	<vertex_shader>
+		<variables>
+in vec2 in_vertex;
+out vec2 tex_coord;
+		</variables>
+		<program>
+void main() {
+	gl_Position = vec4(in_vertex.x, in_vertex.y, 0.0, 1.0);
+	tex_coord = in_vertex * 0.5 + 0.5;
+}
+		</program>
+	</vertex_shader>
+	
+	<fragment_shader>
+		<variables>
+uniform sampler2D src_buffer;
+in vec2 tex_coord;
+out vec4 frag_color;
+		</variables>
+		<program>
+void main() {
+	// this should be done per texel (-> point filtering)
+	ivec2 itex_coord = ivec2(vec2(textureSize(src_buffer, 0)) * tex_coord);
+	vec3 color = texelFetch(src_buffer, itex_coord, 0).xyz;
+	const vec3 luma_vec = vec3(0.2126, 0.7152, 0.0722);
+	frag_color = vec4(color, dot(color, luma_vec));
+}
+		</program>
+	</fragment_shader>
+	
+</a2e_shader>

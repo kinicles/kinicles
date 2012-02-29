@@ -1,0 +1,57 @@
+<!ELEMENT config (#PCDATA | screen | projection | input | sleep | graphic | graphic_device | inferred | opencl | camera | audio)*>
+<!ELEMENT screen (#PCDATA)*>
+<!ATTLIST screen
+	width CDATA #REQUIRED
+	height CDATA #REQUIRED
+	fullscreen CDATA #REQUIRED
+	vsync CDATA #REQUIRED
+	stereo CDATA #REQUIRED
+>
+<!ELEMENT projection (#PCDATA)*>
+<!ATTLIST projection
+	fov CDATA #REQUIRED
+	near CDATA #REQUIRED
+	far CDATA #REQUIRED
+>
+<!ELEMENT input (#PCDATA)*>
+<!ATTLIST input
+	key_repeat CDATA #REQUIRED
+	ldouble_click CDATA #REQUIRED
+	mdouble_click CDATA #REQUIRED
+	rdouble_click CDATA #REQUIRED
+>
+<!ELEMENT sleep (#PCDATA)*>
+<!ATTLIST sleep
+	time CDATA #REQUIRED
+>
+<!ELEMENT graphic (#PCDATA)*>
+<!ATTLIST graphic
+	filtering CDATA #REQUIRED
+	anisotropic CDATA #REQUIRED
+	anti_aliasing CDATA #REQUIRED
+>
+<!ELEMENT graphic_device (#PCDATA)*>
+<!ATTLIST graphic_device
+	disabled_extensions CDATA #REQUIRED
+	force_device CDATA #REQUIRED
+	force_vendor CDATA #REQUIRED
+>
+<!ELEMENT inferred (#PCDATA)*>
+<!ATTLIST inferred
+	scale CDATA #REQUIRED
+>
+<!ELEMENT opencl (#PCDATA)*>
+<!ATTLIST opencl
+	platform CDATA #REQUIRED
+	clear_cache CDATA #REQUIRED
+>
+<!ELEMENT camera (#PCDATA)*>
+<!ATTLIST camera
+	position CDATA #REQUIRED
+	rotation CDATA #REQUIRED
+>
+<!ELEMENT audio (#PCDATA)*>
+<!ATTLIST audio
+	playback CDATA #REQUIRED
+	fake_spectrum CDATA #REQUIRED
+>

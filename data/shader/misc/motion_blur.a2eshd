@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a2e_shader version="1">
+	<vertex_shader>
+		<variables>
+in vec2 in_vertex;
+centroid out vec2 tex_coord;
+		</variables>
+		<program>
+void main() {
+	gl_Position = vec4(in_vertex.x, in_vertex.y, 0.0, 1.0);
+	tex_coord = in_vertex * 0.5 + 0.5;
+}
+		</program>
+	</vertex_shader>
+	
+	<fragment_shader>
+		<variables>
+uniform sampler2D new_frame;
+uniform sampler2D old_frame;
+centroid in vec2 tex_coord;
+out vec4 frag_color;
+		</variables>
+		<program>
+void main() {
+	vec3 new_color = texture(new_frame, tex_coord, 0).xyz;
+	vec3 old_color = texture(old_frame, tex_coord, 0).xyz;
+	
+	old_color *= 0.65;
+	new_color *= new_color;
+	new_color *= 0.35;
+	new_color += old_color;
+	
+	// float arithmetic is too imprecise to ever reach 0.0 again in the computation above
+	new_color.x = (new_color.x <= (4.0/255.0) ? 0.0 : new_color.x);
+	new_color.y = (new_color.y <= (4.0/255.0) ? 0.0 : new_color.y);
+	new_color.z = (new_color.z <= (4.0/255.0) ? 0.0 : new_color.z);
+	
+	frag_color = vec4(new_color, 1.0);
+}
+		</program>
+	</fragment_shader>
+	
+</a2e_shader>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a2e_shader_include version="1">
+
+	<vertex_shader>
+		<preprocessor>
+#define BONE_COUNT 11
+		</preprocessor>
+		<variables>
+layout(std140) uniform bone_data_buffer {
+	struct {
+		mat4 mat;
+		mat4 inv_mat;
+	} data[BONE_COUNT];
+} bones;
+
+in vec4 weights;
+in ivec4 bone_indices;
+
+vec4 apply_skinning(vec4 in_pos) {
+	vec4 out_pos = vec4(0.0);
+
+	in_pos.w = 1.0;
+	
+	// transform by orientation matrix
+	for(int i = 0; i < 4; i++) {
+		int bone_index = bone_indices[i];
+		mat4 bone_mat = bones.data[bone_index].mat;
+		mat4 inv_bone_mat = transpose(bones.data[bone_index].inv_mat);
+		out_pos += weights[i] * (bone_mat * (inv_bone_mat * in_pos));
+	}
+	
+	//
+	out_pos.w = 1.0;
+	
+	return out_pos;
+}
+
+		</variables>
+		<program>
+		</program>
+	</vertex_shader>
+</a2e_shader_include>

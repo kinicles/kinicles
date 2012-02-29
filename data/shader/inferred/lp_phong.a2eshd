@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a2e_shader version="1">
+	<!-- note: std/# option is point lighting -->
+	<options list="# directional" />
+	<includes>global</includes>
+
+	<vertex_shader>
+		<variables>
+<option value="#">
+uniform vec4 light_position;
+uniform float light_radius;
+uniform mat4 mvpm;
+</option>
+
+		</variables>
+		<program>
+void main() {
+	<option value="#">
+	gl_Position = mvpm * vec4(in_vertex*light_radius + light_position.xyz, 1.0);
+	</option>
+	
+	<option value="directional">
+	gl_Position = vec4(in_vertex.x, in_vertex.y, 0.0, 1.0);
+	</option>
+}
+		</program>
+	</vertex_shader>
+	
+	<fragment_shader>
+		<variables>
+uniform sampler2D normal_nuv_buffer;
+uniform sampler2D depth_buffer;
+
+uniform vec3 cam_position;
+uniform vec2 screen_size;
+uniform vec2 projection_ab;
+
+// note: pos is packed with radius^2 and color with 1/radius^2
+uniform vec4 light_position;
+uniform vec4 light_color;
+
+<option value="directional">
+uniform vec4 light_ambient;
+</option>
+
+uniform mat4 imvm;
+		</variables>
+		<program>
+void main() {
+	vec2 tex_coord = gl_FragCoord.xy / screen_size;
+	
+	float depth = texture(depth_buffer, tex_coord).r; // in [0, 1]
+	if(depth >= 1.0 || depth <= 0.0) discard;
+	
+	////////////////////////////////////////////////////////////////////////////
+	// reconstruct world space position
+	float linear_depth = projection_ab.y / (depth - projection_ab.x); // in [near plane, far plane]
+	const float up_vec = 0.72654252800536066024136247722454;
+	float right_vec = up_vec * (screen_size.x / screen_size.y);
+	
+	vec3 rep_pos;
+	rep_pos.z = -linear_depth;
+	rep_pos.xy = (tex_coord * 2.0 - 1.0) * vec2(right_vec, up_vec) * linear_depth;
+	rep_pos = vec3(imvm * vec4(rep_pos, 1.0));
+	
+	////////////////////////////////////////////////////////////////////////////
+	// lighting (start: check if lit)
+	// note: light_color.w == 1/light_radius^2
+	vec3 light_dir = (light_position.xyz - rep_pos);
+	
+	<option value="#">
+	light_dir *= light_color.w;
+	// attenutation = distance / light_radius^4
+	float attenuation = 1.0 - dot(light_dir, light_dir) * light_position.w;
+	if(attenuation <= 0.0) discard;
+	</option>
+	
+	<option value="directional">
+	const float attenuation = 1.0;
+	</option>
+	
+	light_dir = normalize(light_dir);
+	
+	////////////////////////////////////////////////////////////////////////////
+	// read and decode normal
+	vec4 normal_nuv_read = texture(normal_nuv_buffer, tex_coord).rgba;
+	vec2 normal_read = normal_nuv_read.xy;
+	vec2 nuv_read = normal_nuv_read.zw;
+	vec3 normal;
+	normal.z = dot(normal_read.xy, normal_read.xy) * 2.0 - 1.0;
+	// and again: abs inner sqrt result, b/c of fp inaccuracies
+	normal.xy = normalize(normal_read.xy) * sqrt(abs(1.0 - normal.z * normal.z));
+	
+	////////////////////////////////////////////////////////////////////////////
+	// lighting (continuation: actual lighting)
+	// phong lighting
+	vec4 final_color = vec4(0.0);
+	
+	float lambertTerm = dot(normal, light_dir);
+	if(lambertTerm > 0.0) {
+		final_color.rgb += light_color.rgb * lambertTerm * attenuation;
+		
+		vec3 view_dir = normalize(cam_position - rep_pos);
+		vec3 R = reflect(-light_dir, normal);
+		float specular = pow(max(dot(R, view_dir), 0.0), nuv_read.x);
+		<option value="#">
+		final_color.a = length(light_color.rgb * attenuation * specular) * clamp(log(attenuation)/5.0, 0.0, 2.0);
+		</option>
+		<option value="directional">
+		// since attenuation is const 1.0 with directional lighting, the computation above would get optimized away
+		final_color.a = length(light_color.rgb * specular) * 0.05;
+		</option>
+	}
+	<option value="#">
+	else discard;
+	</option>
+	
+	<option value="directional">
+	final_color += light_ambient;
+	</option>
+	
+	frag_color = final_color;
+}
+		</program>
+	</fragment_shader>
+	
+</a2e_shader>

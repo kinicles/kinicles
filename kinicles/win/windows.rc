@@ -1,0 +1,25 @@
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION	1,0,0,0
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904E4"
+		BEGIN
+			VALUE "CompanyName", "Kinicles"
+			VALUE "FileDescription", "Kinicles"
+			VALUE "FileVersion", "1.0"
+			VALUE "InternalName", "Kinicles"
+			VALUE "LegalCopyright", "Copyright © 2012 Florian Ziesche, Peter Wrobel, Yannic Haupenthal. All rights reserved."
+			VALUE "OriginalFilename", "kinicles.exe"
+			VALUE "ProductName", "Kinicles"
+			VALUE "ProductVersion", "1.0"
+		END
+	END
+
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x409, 1252
+	END
+END
+42 ICON bus.ico
